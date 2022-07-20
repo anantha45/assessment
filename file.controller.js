@@ -3,9 +3,9 @@ async function saveFile(req, res){
     try{
         const reqBody = req;
         fileService.saveFile(reqBody).then((result) => {
-            res.json({status : 200, data : result})
+            res.json({status : 200, data : "Image uploaded successfully"})
         }).catch((err) => {
-            res.json({status : 400, message :"Error occured"})
+            res.json(err)
         })
     }catch(err){
         res.json({status : 400, message :"Error occured"})
@@ -16,7 +16,7 @@ async function getFiles(req, res){
         fileService.getFiles().then((result) => {
             res.json({status : 200, data : result})
         }).catch((err) => {
-            res.json({status : 400, message :"Error occured"})
+            res.json(err)
         })
     }catch(err){
         res.json({status : 400, message :"Error occured"})
@@ -28,7 +28,7 @@ async function getFileById(req, res){
         fileService.getFileById(queryParams).then((result) => {
             res.json({status : 200, data : result})
         }).catch((err) => {
-            res.json({status : 400, message :"Error occured"})
+            res.json(err)
         })
     }catch(err){
         res.json({status : 400, message :"Error occured"})

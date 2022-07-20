@@ -1,8 +1,13 @@
 const fileModel = require("./file.model")
 const path = require('path')
 const sharp = require("sharp");
+const validTypes = ["jpg","jpeg","png"];
 async function saveFile(reqBody){
     try{
+        const fileType = reqBody.file.mimetype.split("/")
+        if(validTypes.indexOf(fileType[1]) == -1 ){
+            throw {message : "Please upload valid image type",status : 400};;
+        }
         const filePath = path.join(__dirname,"uploads", reqBody.file.filename);
         const fileParts = reqBody.file.filename.split(".");
         const thumbnailPath = path.join(__dirname,"uploads", `${fileParts[0]}_thumbs.${fileParts[1]}`);
@@ -14,11 +19,10 @@ async function saveFile(reqBody){
         const uploadData = {
             name : reqBody.file.filename,
             path :filePath,
-            type:reqBody.file.mimetype,
+            type:fileType[1],
             images : [{width :300, path : thumbnailPath},{width : 600, path : previewPath}]
         }
         const response = await fileModel.insertImage(uploadData)
-        return response;
     }catch(err){
        throw err;
     }
@@ -39,10 +43,10 @@ async function getFileById(params){
         searchParams._id = params.imageId
         if(params.width){
            response = await fileModel.getFile(params,1);
-           return response.images.length > 0 ? response.images[0] : null
+           return response.images.length > 0 ? response.images[0].path : null
         }else{
             response = await fileModel.getFile(searchParams);
-            return response;
+            return response ? response.images : [];
         }
 
     }catch(err){

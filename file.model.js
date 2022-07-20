@@ -3,10 +3,9 @@ async function insertImage(data){
     try{
         const fileData = new fileSchema(data);
         const response = await fileData.save();
-        return response;
 
     }catch(err){
-       throw err;
+       throw {message : "Database error occured",status : 400};
     }
 }
 async function getAll(){
@@ -15,7 +14,7 @@ async function getAll(){
         return response;
 
     }catch(err){
-       throw err;
+       throw {message : "Database error occured",status : 400};
     }
 }
 async function getFile(searchParams,flag = 0){
@@ -25,12 +24,12 @@ async function getFile(searchParams,flag = 0){
             response = await fileSchema.findOne({_id : searchParams.imageId},{ images: { $elemMatch: { width: Number(searchParams.width)} }});
         }
         else{
-            response = await fileSchema.find(searchParams).select("images");
+            response = await fileSchema.findOne(searchParams).select('images')
         }
         return response;
 
     }catch(err){
-       throw err;
+       throw {message : "Database error occured",status : 400};
     }
 }
 module.exports = {
